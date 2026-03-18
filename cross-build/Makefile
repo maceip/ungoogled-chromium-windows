@@ -34,6 +34,7 @@ build-image: Dockerfile.msvc winsysroot.stamp
 	rm -rf $(CONTEXT)
 	mkdir $(CONTEXT)
 	cp -al winsysroot/ $(CONTEXT)
+	cp -a ipfs/ $(CONTEXT)
 	docker build \
 		--file $< \
 		--tag $(IMAGE_NAME) \
@@ -317,7 +318,32 @@ clean-more:
 	rm -f *.manifest
 	rm -rf msvc-cache
 
+#### IPFS build targets
+
+# Build volume on the host (mounted as /build in container)
+BUILD_VOLUME ?= $(HOME)/chromium-win-build
+
+ipfs-run-win:
+	docker container run -it --rm \
+		--name=ipfs-build \
+		--hostname=ipfs-build \
+		$(extra_run_args) \
+		--user=root \
+		-v $(BUILD_VOLUME):/build \
+		$(IMAGE_NAME) \
+		/opt/ipfs-build/ipfs-build.sh $(IPFS_ARGS)
+
+ipfs-run-android:
+	docker container run -it --rm \
+		--name=ipfs-android-build \
+		--hostname=ipfs-android-build \
+		$(extra_run_args) \
+		--user=root \
+		-v $(BUILD_VOLUME):/build \
+		$(IMAGE_NAME) \
+		/opt/ipfs-build/android-build.sh $(IPFS_ARGS)
+
 .PHONY: run run-extra build-image build-image-base verify-image \
-	clean clean-more
+	clean clean-more ipfs-run-win ipfs-run-android
 
 # end Makefile

@@ -12,6 +12,9 @@ LABEL org.opencontainers.image.description="Chromium browser cross-build environ
 
 ADD winsysroot /opt/microsoft
 
+# IPFS build scripts and cross-compilation patches
+ADD ipfs /opt/ipfs-build
+
 ENV GYP_MSVS_OVERRIDE_PATH=/opt/microsoft \
     WINDOWSSDKDIR="/opt/microsoft/Windows Kits/10"
 

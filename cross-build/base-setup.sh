@@ -97,6 +97,11 @@ run apt-get -y install \
 
 run apt-get -y install libgcc-14-dev
 
+# Java (needed for Android builds) and libfuse2 (needed by vs_toolchain.py ciopfs)
+run apt-get -y install \
+	libfuse2 \
+	openjdk-11-jdk-headless
+
 if [ -n "$MULTI_ARCH" ]
 then
 	# ARM64 cross libraries are not needed, only x86
